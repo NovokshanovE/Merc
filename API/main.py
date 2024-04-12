@@ -1,6 +1,6 @@
 from fastapi import  FastAPI, UploadFile, File
 # from fastapi.responses import FileResponse
-from ML.api import sertificate_image
+from API.ML.api import sertificate_image
 
 app = FastAPI()
 
@@ -13,7 +13,7 @@ def upload_file_bytes(file_bytes: bytes = File()):
     return {'file_bytes': str(file_bytes)}
 
 
-@app.post("/file/upload-file")
+@app.post("/file")#/upload-file")
 def upload_file(file: UploadFile):
     sertificate_image(file)
     
