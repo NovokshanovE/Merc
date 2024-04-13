@@ -19,6 +19,8 @@ dependencies:
   http: ^1.2.1
   open_file: ^3.3.2
   provider: ^6.1.2
+  file_selector: ^1.0.0
+  image_picker: ^1.0.8
 
 dev_dependencies:
   flutter_test:
