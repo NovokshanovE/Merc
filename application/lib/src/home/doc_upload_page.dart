@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:ffi';
 
+import 'package:dotted_border/dotted_border.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,14 +17,13 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'dio';
 
-class MyAppState extends ChangeNotifier{
+class MyAppState extends ChangeNotifier {
   late Map req_body = {};
   List<Map> history = [];
 
-
   void getNext(data) {
     req_body = data;
-    switch (req_body["type"]){
+    switch (req_body["type"]) {
       case "personal_passport":
         req_body["type"] = "Персональный паспорт";
       case "vehicle_passport":
@@ -62,7 +62,6 @@ class MyAppState extends ChangeNotifier{
       Response response = await dio.post(
         url,
         data: formData,
-
       );
 
       if (response.statusCode == 200) {
@@ -79,7 +78,7 @@ class MyAppState extends ChangeNotifier{
   }
 }
 
-class DocUploadPage extends StatelessWidget{
+class DocUploadPage extends StatelessWidget {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController reportController = TextEditingController();
   static const routeName = '/';
@@ -88,9 +87,6 @@ class DocUploadPage extends StatelessWidget{
 
   bool fileFlag = false;
   FilePickerResult? result;
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -108,50 +104,48 @@ class DocUploadPage extends StatelessWidget{
           ),
         ],
       ),
-      body:
-        Center(
-          child: Column(children: [
-            ViewDocInfo(data: data),
-            const Padding(padding: const EdgeInsets.all(50.0)),
-            ElevatedButton.icon(
-                icon: const Icon(Icons.upload_file),
-                label: const Text('UPLOAD FILE'),
-                onPressed: () async {
-                  // appState.getHttp();
-                  // var picked =
-                  // await FilePicker.platform.pickFiles(type: FileType.image);
+      body: Center(
+        child: Column(children: [
+          ViewDocInfo(data: data),
+          const Padding(padding: const EdgeInsets.all(50.0)),
+          ElevatedButton.icon(
+              icon: const Icon(Icons.upload_file),
+              label: const Text('UPLOAD FILE'),
+              onPressed: () async {
+                // appState.getHttp();
+                // var picked =
+                // await FilePicker.platform.pickFiles(type: FileType.image);
 
-                  var picked = await ImagePicker.platform.getImageFromSource(source: ImageSource.gallery);
-                  // const XTypeGroup jpgsTypeGroup = XTypeGroup(
-                  //   label: 'JPEGs',
-                  //   extensions: <String>['jpg', 'jpeg'],
-                  // );
-                  // const XTypeGroup pngTypeGroup = XTypeGroup(
-                  //   label: 'PNGs',
-                  //   extensions: <String>['png'],
-                  // );
-                  // final List<XFile> picked =
-                  //     await openFiles(acceptedTypeGroups: <XTypeGroup>[
-                  //   jpgsTypeGroup,
-                  //   pngTypeGroup,
-                  // ]);
-                  // final ImagePicker picker = ImagePicker.platform.getMedia(options: options);
+                var picked = await ImagePicker.platform
+                    .getImageFromSource(source: ImageSource.gallery);
+                // const XTypeGroup jpgsTypeGroup = XTypeGroup(
+                //   label: 'JPEGs',
+                //   extensions: <String>['jpg', 'jpeg'],
+                // );
+                // const XTypeGroup pngTypeGroup = XTypeGroup(
+                //   label: 'PNGs',
+                //   extensions: <String>['png'],
+                // );
+                // final List<XFile> picked =
+                //     await openFiles(acceptedTypeGroups: <XTypeGroup>[
+                //   jpgsTypeGroup,
+                //   pngTypeGroup,
+                // ]);
+                // final ImagePicker picker = ImagePicker.platform.getMedia(options: options);
 
-                  print(picked?.name.toString());
+                print(picked?.name.toString());
 
-                  if (picked?.path != null) {
-                    appState.createReport(
-                        picked?.path, picked!.name);
-                  } else {
-                    appState.createReport('', '');
-                  }
-                  // print(picked.first.path);
+                if (picked?.path != null) {
+                  appState.createReport(picked?.path, picked!.name);
+                } else {
+                  appState.createReport('', '');
+                }
+                // print(picked.first.path);
 
-                  // appState.createReport(picked.first.path, picked.first.name);
-                }),
-          ]),
-        ),
-
+                // appState.createReport(picked.first.path, picked.first.name);
+              }),
+        ]),
+      ),
     );
   }
 }
@@ -169,46 +163,66 @@ class ViewDocInfo extends StatelessWidget {
     if (data.isNotEmpty) {
       return Column(
         children: [
-         Text("Информаия о документе"),
-          Padding(padding: const EdgeInsets.all(20.0),),
-
+          Container(
+                decoration: BoxDecoration(
+                  border: Border.all(width: 5, color: Colors.deepPurpleAccent),
+                  borderRadius: BorderRadius.all(Radius.circular(50)),
+                ),
+                // color: Colors.blue,
+                padding: const EdgeInsets.all(16.0),
+                // padding: const EdgeInsets.all(16.0),
+                // decoration: BoxDecoration(
+                //   // border: Border.all(width: 1, color: Colors.red),
+                //   borderRadius: BorderRadius.all(Radius.circular(1)),
+                // ),
+                child: Text(
+                  "Информаия о документе",
+                  style: TextStyle(fontSize: 20.0),
+                ),
+              ),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+          ),
           Table(
-            defaultVerticalAlignment: TableCellVerticalAlignment.intrinsicHeight,
+            defaultVerticalAlignment:
+                TableCellVerticalAlignment.intrinsicHeight,
             border: TableBorder.all(color: Colors.black),
             children: [
-
-              TableRow(
-                  children: [BigCard(text: "Тип: "), BigCard(text:data["type"]),]
-              ),
-              TableRow(
-                  children: [BigCard(text: "Вероятность: "), BigCard(text:data["confidence"].toString()),]
-              ),
-
               TableRow(children: [
-                BigCard(text: "Серия: "), //.["series"]),
-                BigCard(text: data["series"]), //["number"]),
-              ],),
+                BigCard(text: "Тип: "),
+                BigCard(text: data["type"]),
+              ]),
               TableRow(children: [
-                BigCard(text: "Номер: "), //.["series"]),
-                BigCard(text: data["number"]), //["number"]),
-              ],),
+                BigCard(text: "Вероятность: "),
+                BigCard(text: data["confidence"].toString()),
+              ]),
               TableRow(
-                  children: [BigCard(text: "Номер страницы: "), BigCard(text: data["page_number"].toString()),]
+                children: [
+                  BigCard(text: "Серия: "), //.["series"]),
+                  BigCard(text: data["series"]), //["number"]),
+                ],
               ),
-
+              TableRow(
+                children: [
+                  BigCard(text: "Номер: "), //.["series"]),
+                  BigCard(text: data["number"]), //["number"]),
+                ],
+              ),
+              TableRow(children: [
+                BigCard(text: "Номер страницы: "),
+                BigCard(text: data["page_number"].toString()),
+              ]),
             ],
           ),
         ],
       );
-    } else{
+    } else {
       return Column(
         children: [
-
           BigCard(text: "No file received"),
         ],
       );
     }
-
   }
 }
 
@@ -224,9 +238,8 @@ class BigCard extends StatelessWidget {
   Widget build(BuildContext context) {
     // final theme = Theme.of(context);
     return Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Text(text),
-
+      padding: const EdgeInsets.all(20.0),
+      child: Text(text),
     );
   }
 }
