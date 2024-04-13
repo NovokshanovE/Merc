@@ -1,5 +1,5 @@
 import random
-from fastapi import  FastAPI, UploadFile, File
+from fastapi import  FastAPI, UploadFile, File, HTTPException, Request
 # from fastapi.responses import FileResponse
 from API.ML.api import sertificate_image
 
@@ -19,8 +19,16 @@ def upload_file_bytes(file_bytes: bytes = File()):
 
 @app.post("/detect")#/upload-file")
 async def upload_file(file: UploadFile):
-    
+    # if file is None:
+    #     return "No file received"
+        
     return sertificate_image(file)
+
+@app.exception_handler(HTTPException)
+async def bad_request_handler(request: Request, exc: HTTPException):
+    
+    return "No file received"
+
 
 
 @app.post("/uploadfile/")

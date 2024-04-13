@@ -55,6 +55,7 @@ class MyAppState extends ChangeNotifier {
         print('Failed to send request. Status code: ${response.statusCode}');
       }
     } catch (error) {
+      getNext("No file received");
       print('Error sending request: $error');
     }
   }
