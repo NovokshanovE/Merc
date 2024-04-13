@@ -20,7 +20,7 @@ class ReportPage extends StatelessWidget {
   ReportPage({super.key});
 
   void getHttp() async {
-    final response = await dio.get('http://127.0.0.1:4000/order?id=id_1');
+    final response = await dio.get('http://0.0.0.0:8002/');
     print(response);
   }
 
