@@ -1,3 +1,4 @@
+import random
 from fastapi import  FastAPI, UploadFile, File
 # from fastapi.responses import FileResponse
 from API.ML.api import sertificate_image
@@ -14,7 +15,11 @@ def upload_file_bytes(file_bytes: bytes = File()):
 
 
 @app.post("/file")#/upload-file")
-def upload_file(file: UploadFile):
-    sertificate_image(file)
+async def upload_file():#file: UploadFile):
+    #sertificate_image(file)
     
-    return file
+    return random.random()
+
+@app.post("/uploadfile/")
+async def create_upload_file(file: UploadFile):
+    return {"filename": file.filename}
