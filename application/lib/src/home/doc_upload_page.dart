@@ -1,6 +1,8 @@
+import 'dart:collection';
 import 'dart:ffi';
 
 import 'package:file_selector/file_selector.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,12 +13,28 @@ import 'package:image_picker/image_picker.dart';
 import '../settings/settings_view.dart';
 import 'package:dio/dio.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 // import 'dio';
 
-class MyAppState extends ChangeNotifier {
-  var req_body = '';
-  void getNext(text) {
-    req_body = text;
+class MyAppState extends ChangeNotifier{
+  late Map req_body = {};
+  List<Map> history = [];
+  
+
+  void getNext(data) {
+    req_body = data;
+    switch (req_body["type"]){
+      case "personal_passport":
+        req_body["type"] = "Персональный паспорт";
+      case "vehicle_passport":
+        req_body["type"] = "Паспорт ТС";
+      case "vehicle_certificate":
+        req_body["type"] = "Сертификат ТС";
+      case "driver_license":
+        req_body["type"] = "Водительское удостоверение";
+    }
+    print(req_body.toString());
+    history.add(req_body);
     notifyListeners();
   }
 
@@ -50,18 +68,18 @@ class MyAppState extends ChangeNotifier {
       if (response.statusCode == 200) {
         print('Request sent successfully');
         print(response.data);
-        getNext(response.data.toString());
+        getNext(response.data);
       } else {
         print('Failed to send request. Status code: ${response.statusCode}');
       }
     } catch (error) {
-      getNext("No file received");
+      getNext({"No file received"});
       print('Error sending request: $error');
     }
   }
 }
 
-class DocUploadPage extends StatelessWidget {
+class DocUploadPage extends StatelessWidget{
   final TextEditingController nameController = TextEditingController();
   final TextEditingController reportController = TextEditingController();
   static const routeName = '/';
@@ -71,10 +89,13 @@ class DocUploadPage extends StatelessWidget {
   bool fileFlag = false;
   FilePickerResult? result;
 
+
+
+
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
-    var text = appState.req_body;
+    var data = appState.req_body;
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
@@ -87,49 +108,85 @@ class DocUploadPage extends StatelessWidget {
           ),
         ],
       ),
-      body: Center(
-        child: Column(children: [
-          BigCard(text: text),
-          const Padding(padding: const EdgeInsets.all(50.0)),
-          ElevatedButton.icon(
-              icon: const Icon(Icons.upload_file),
-              label: const Text('UPLOAD FILE'),
-              onPressed: () async {
-                // appState.getHttp();
-                // var picked =
-                // await FilePicker.platform.pickFiles(type: FileType.image);
+      body:
+        Center(
+          child: Column(children: [
+            ViewDocInfo(data: data),
+            const Padding(padding: const EdgeInsets.all(50.0)),
+            ElevatedButton.icon(
+                icon: const Icon(Icons.upload_file),
+                label: const Text('UPLOAD FILE'),
+                onPressed: () async {
+                  // appState.getHttp();
+                  // var picked =
+                  // await FilePicker.platform.pickFiles(type: FileType.image);
 
-                var picked = await ImagePicker.platform.getImageFromSource(source: ImageSource.gallery);
-                // const XTypeGroup jpgsTypeGroup = XTypeGroup(
-                //   label: 'JPEGs',
-                //   extensions: <String>['jpg', 'jpeg'],
-                // );
-                // const XTypeGroup pngTypeGroup = XTypeGroup(
-                //   label: 'PNGs',
-                //   extensions: <String>['png'],
-                // );
-                // final List<XFile> picked =
-                //     await openFiles(acceptedTypeGroups: <XTypeGroup>[
-                //   jpgsTypeGroup,
-                //   pngTypeGroup,
-                // ]);
-                // final ImagePicker picker = ImagePicker.platform.getMedia(options: options);
+                  var picked = await ImagePicker.platform.getImageFromSource(source: ImageSource.gallery);
+                  // const XTypeGroup jpgsTypeGroup = XTypeGroup(
+                  //   label: 'JPEGs',
+                  //   extensions: <String>['jpg', 'jpeg'],
+                  // );
+                  // const XTypeGroup pngTypeGroup = XTypeGroup(
+                  //   label: 'PNGs',
+                  //   extensions: <String>['png'],
+                  // );
+                  // final List<XFile> picked =
+                  //     await openFiles(acceptedTypeGroups: <XTypeGroup>[
+                  //   jpgsTypeGroup,
+                  //   pngTypeGroup,
+                  // ]);
+                  // final ImagePicker picker = ImagePicker.platform.getMedia(options: options);
 
-                print(picked?.name.toString());
+                  print(picked?.name.toString());
 
-                if (picked?.path != null) {
-                  appState.createReport(
-                      picked?.path, picked!.name);
-                } else {
-                  appState.createReport('', '');
-                }
-                // print(picked.first.path);
+                  if (picked?.path != null) {
+                    appState.createReport(
+                        picked?.path, picked!.name);
+                  } else {
+                    appState.createReport('', '');
+                  }
+                  // print(picked.first.path);
 
-                // appState.createReport(picked.first.path, picked.first.name);
-              }),
-        ]),
-      ),
+                  // appState.createReport(picked.first.path, picked.first.name);
+                }),
+          ]),
+        ),
+
     );
+  }
+}
+
+class ViewDocInfo extends StatelessWidget {
+  const ViewDocInfo({
+    super.key,
+    required this.data,
+  });
+
+  final Map data;
+
+  @override
+  Widget build(BuildContext context) {
+    if (data.isNotEmpty) {
+      return Column(
+        children: [
+          BigCard(text: "Тип: "+data["type"]),
+          BigCard(text: "Вероятность: "+data["confidence"].toString()),
+          Row(crossAxisAlignment: CrossAxisAlignment.center ,children: [
+            BigCard(text: "Серия: "+data["series"]), //.["series"]),
+            BigCard(text: "Номер: "+data["number"]), //["number"]),
+          ],),
+          BigCard(text: "Номер страницы: "+data["page_number"].toString()),
+        ],
+      );
+    } else{
+      return Column(
+        children: [
+
+          BigCard(text: "No file received"),
+        ],
+      );
+    }
+
   }
 }
 
@@ -148,7 +205,7 @@ class BigCard extends StatelessWidget {
       // color: theme.colorScheme.primary,
 
       child: Padding(
-        padding: const EdgeInsets.all(50.0),
+        padding: const EdgeInsets.all(20.0),
         child: Text(text),
       ),
     );
