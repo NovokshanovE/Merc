@@ -19,7 +19,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class MyAppState extends ChangeNotifier{
   late Map req_body = {};
   List<Map> history = [];
-  
+
 
   void getNext(data) {
     req_body = data;
@@ -169,13 +169,35 @@ class ViewDocInfo extends StatelessWidget {
     if (data.isNotEmpty) {
       return Column(
         children: [
-          BigCard(text: "Тип: "+data["type"]),
-          BigCard(text: "Вероятность: "+data["confidence"].toString()),
-          Row(crossAxisAlignment: CrossAxisAlignment.center ,children: [
-            BigCard(text: "Серия: "+data["series"]), //.["series"]),
-            BigCard(text: "Номер: "+data["number"]), //["number"]),
-          ],),
-          BigCard(text: "Номер страницы: "+data["page_number"].toString()),
+         Text("Информаия о документе"),
+          Padding(padding: const EdgeInsets.all(20.0),),
+
+          Table(
+            defaultVerticalAlignment: TableCellVerticalAlignment.intrinsicHeight,
+            border: TableBorder.all(color: Colors.black),
+            children: [
+
+              TableRow(
+                  children: [BigCard(text: "Тип: "), BigCard(text:data["type"]),]
+              ),
+              TableRow(
+                  children: [BigCard(text: "Вероятность: "), BigCard(text:data["confidence"].toString()),]
+              ),
+
+              TableRow(children: [
+                BigCard(text: "Серия: "), //.["series"]),
+                BigCard(text: data["series"]), //["number"]),
+              ],),
+              TableRow(children: [
+                BigCard(text: "Номер: "), //.["series"]),
+                BigCard(text: data["number"]), //["number"]),
+              ],),
+              TableRow(
+                  children: [BigCard(text: "Номер страницы: "), BigCard(text: data["page_number"].toString()),]
+              ),
+
+            ],
+          ),
         ],
       );
     } else{
@@ -201,13 +223,10 @@ class BigCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // final theme = Theme.of(context);
-    return Card(
-      // color: theme.colorScheme.primary,
-
-      child: Padding(
+    return Padding(
         padding: const EdgeInsets.all(20.0),
         child: Text(text),
-      ),
+
     );
   }
 }
