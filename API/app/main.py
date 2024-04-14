@@ -1,7 +1,7 @@
-import random
+# import random
 from fastapi import  FastAPI, UploadFile, File, HTTPException, Request
 # from fastapi.responses import FileResponse
-from API.ML.api import sertificate_image
+from app.ML.api import sertificate_image
 
 app = FastAPI()
 

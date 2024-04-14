@@ -5,8 +5,7 @@ FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9-slim AS builder
 WORKDIR /app
 
 COPY requirements.txt ./
-RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install -r requirements.txt
+RUN pip install -r requirements.txt
 
 COPY ./app ./app
 
@@ -22,5 +21,12 @@ useradd -s /bin/bash -m vscode
 groupadd docker
 usermod -aG docker vscode
 EOF
+
+
 # install Docker tools (cli, buildx, compose)
 COPY --from=gloursdocker/docker / /
+
+# CMD [ "uvicorn", "main:app", "--reload", "--workers", "1", "--host", "192.168.1.5", "--port", "8002" ]
+
+
+RUN uvicorn main:app --reload --workers 1 --host 192.168.1.5 --port 8002

@@ -45,7 +45,8 @@ class MyAppState extends ChangeNotifier {
   }
 
   void createReport(String? path, String filename) async {
-    String url = 'http://192.168.1.5:8002/detect';
+    // String url = 'http://192.168.1.5:8002/detect';
+    String url = 'http://192.168.1.5:8000/detect';
     // String f = (file != null && file != '') ? file : '';
     try {
       FormData formData;
@@ -72,7 +73,7 @@ class MyAppState extends ChangeNotifier {
         print('Failed to send request. Status code: ${response.statusCode}');
       }
     } catch (error) {
-      getNext({"No file received"});
+      getNext(Map());
       print('Error sending request: $error');
     }
   }
