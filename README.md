@@ -35,3 +35,5 @@ docker-compose run api
 
 
 
+### Выбор темы приложения
+<img src="image-3.png" width="400">
