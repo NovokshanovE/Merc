@@ -4,6 +4,7 @@
 Bash:
 
 ```bash
+cd API
 docker-compose up -d --build
 ```
 
