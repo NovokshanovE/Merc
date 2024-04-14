@@ -12,15 +12,29 @@ class MyAppState extends ChangeNotifier {
 
   void getNext(data) {
     req_body = data;
-    switch (req_body["type"]) {
-      case "personal_passport":
-        req_body["type"] = "Персональный паспорт";
-      case "vehicle_passport":
-        req_body["type"] = "Паспорт ТС";
-      case "vehicle_certificate":
-        req_body["type"] = "Сертификат ТС";
-      case "driver_license":
-        req_body["type"] = "Водительское удостоверение";
+    req_body["page_number"] = 0;
+    switch (req_body["doc_type"]) {
+      case "passport_first_page":
+        req_body["doc_type"] = "Персональный паспорт";
+        req_body["page_number"] = 1;
+      case "passport_register_page":
+        req_body["doc_type"] = "Персональный паспорт";
+        req_body["page_number"] = 2;
+      case "pts":
+        req_body["doc_type"] = "Паспорт ТС";
+        req_body["page_number"] = 1;
+      case "sts_front":
+        req_body["doc_type"] = "Сертификат ТС";
+        req_body["page_number"] = 1;
+      case "sts_back":
+        req_body["doc_type"] = "Сертификат ТС";
+        req_body["page_number"] = 2;
+      case "drivers_front":
+        req_body["doc_type"] = "Водительское удостоверение";
+        req_body["page_number"] = 1;
+      case "drivers_back":
+        req_body["doc_type"] = "Водительское удостоверение";
+        req_body["page_number"] = 2;
     }
     print(req_body.toString());
     history.add(req_body);
@@ -153,7 +167,7 @@ class ViewDocInfo extends StatelessWidget {
             children: [
               TableRow(children: [
                 BigCard(text: "Тип: "),
-                BigCard(text: data["type"]),
+                BigCard(text: data["doc_type"]),
               ]),
               TableRow(children: [
                 BigCard(text: "Вероятность: "),
@@ -162,13 +176,13 @@ class ViewDocInfo extends StatelessWidget {
               TableRow(
                 children: [
                   BigCard(text: "Серия: "), //.["series"]),
-                  BigCard(text: data["series"]), //["number"]),
+                  BigCard(text: data["series_numbers"]["series"]), //["number"]),
                 ],
               ),
               TableRow(
                 children: [
                   BigCard(text: "Номер: "), //.["series"]),
-                  BigCard(text: data["number"]), //["number"]),
+                  BigCard(text: data["series_numbers"]["number"]), //["number"]),
                 ],
               ),
               TableRow(children: [

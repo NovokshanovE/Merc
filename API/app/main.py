@@ -1,7 +1,8 @@
 import os
 
 from fastapi import FastAPI, UploadFile, HTTPException, Request
-from API.app.ML.api import sertificate_image
+import numpy as np
+from ML.detection_module import run_pipeline
 import cv2
 
 app = FastAPI()
@@ -11,7 +12,9 @@ app = FastAPI()
 def read_root():
     return "Сервис по определению типов и атрибутов документов"
 
-
+def concatenate_to_string(arr):
+    concatenated_string = ', '.join(np.array(arr, dtype=str))
+    return concatenated_string
 @app.post("/detect")
 async def upload_file(file: UploadFile):
     try:
@@ -20,7 +23,11 @@ async def upload_file(file: UploadFile):
             f.write(contents)
         img = cv2.imread(file.filename)
         os.remove(file.filename)
-        return sertificate_image(img)
+        res = run_pipeline(img)
+        res["series_numbers"]["number"] = concatenate_to_string(res["series_numbers"]["number"])
+        res["series_numbers"]["series"] = concatenate_to_string(res["series_numbers"]["series"])
+        print(res)
+        return res
     except Exception as e:
         print(e)
         return {"message": "There was an error uploading the file"}
