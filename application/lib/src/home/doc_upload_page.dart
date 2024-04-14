@@ -1,20 +1,9 @@
-import 'dart:collection';
-import 'dart:ffi';
-
-import 'package:dotted_border/dotted_border.dart';
-import 'package:file_selector/file_selector.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
-// import 'dart:io';
-// import 'package:http/http.dart' as http;
-// import 'package:open_file/open_file.dart';
-
 import '../settings/settings_view.dart';
 import 'package:dio/dio.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 // import 'dio';
 
 class MyAppState extends ChangeNotifier {
@@ -113,26 +102,8 @@ class DocUploadPage extends StatelessWidget {
               icon: const Icon(Icons.upload_file),
               label: const Text('UPLOAD FILE'),
               onPressed: () async {
-                // appState.getHttp();
-                // var picked =
-                // await FilePicker.platform.pickFiles(type: FileType.image);
-
                 var picked = await ImagePicker.platform
                     .getImageFromSource(source: ImageSource.gallery);
-                // const XTypeGroup jpgsTypeGroup = XTypeGroup(
-                //   label: 'JPEGs',
-                //   extensions: <String>['jpg', 'jpeg'],
-                // );
-                // const XTypeGroup pngTypeGroup = XTypeGroup(
-                //   label: 'PNGs',
-                //   extensions: <String>['png'],
-                // );
-                // final List<XFile> picked =
-                //     await openFiles(acceptedTypeGroups: <XTypeGroup>[
-                //   jpgsTypeGroup,
-                //   pngTypeGroup,
-                // ]);
-                // final ImagePicker picker = ImagePicker.platform.getMedia(options: options);
 
                 print(picked?.name.toString());
 
@@ -141,9 +112,6 @@ class DocUploadPage extends StatelessWidget {
                 } else {
                   appState.createReport('', '');
                 }
-                // print(picked.first.path);
-
-                // appState.createReport(picked.first.path, picked.first.name);
               }),
         ]),
       ),
@@ -165,22 +133,16 @@ class ViewDocInfo extends StatelessWidget {
       return Column(
         children: [
           Container(
-                decoration: BoxDecoration(
-                  border: Border.all(width: 5, color: Colors.deepPurpleAccent),
-                  borderRadius: BorderRadius.all(Radius.circular(50)),
-                ),
-                // color: Colors.blue,
-                padding: const EdgeInsets.all(16.0),
-                // padding: const EdgeInsets.all(16.0),
-                // decoration: BoxDecoration(
-                //   // border: Border.all(width: 1, color: Colors.red),
-                //   borderRadius: BorderRadius.all(Radius.circular(1)),
-                // ),
-                child: Text(
-                  "Информаия о документе",
-                  style: TextStyle(fontSize: 20.0),
-                ),
-              ),
+            decoration: BoxDecoration(
+              border: Border.all(width: 5, color: Colors.deepPurpleAccent),
+              borderRadius: BorderRadius.all(Radius.circular(50)),
+            ),
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              "Информаия о документе",
+              style: TextStyle(fontSize: 20.0),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.all(20.0),
           ),
