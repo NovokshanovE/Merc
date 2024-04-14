@@ -1,5 +1,17 @@
 # Merc
 Репозиторий проекта "API для определения типа и атрибутов документа по скану"
+## Запуск
+
+```bash
+python -m venv venv
+source ./venv/bin/activate
+pip install -r requirements.txt
+sudo apt update
+sudo apt install tesseract-ocr-rus
+cd API/app
+uvicorn main:app --reload --workers 1 --host 192.168.1.5 --port 8000
+```
+
 
 ## Bash:
 
