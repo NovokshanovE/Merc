@@ -127,6 +127,22 @@ class DocUploadPage extends StatelessWidget {
                   appState.createReport('', '');
                 }
               }),
+          const Padding(padding: const EdgeInsets.all(10.0)),
+          ElevatedButton.icon(
+              icon: const Icon(Icons.upload_file),
+              label: const Text('CAMERA'),
+              onPressed: () async {
+                var picked = await ImagePicker.platform
+                    .getImageFromSource(source: ImageSource.camera);
+
+                print(picked?.name.toString());
+
+                if (picked?.path != null) {
+                  appState.createReport(picked?.path, picked!.name);
+                } else {
+                  appState.createReport('', '');
+                }
+              }),
         ]),
       ),
     );
