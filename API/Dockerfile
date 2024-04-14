@@ -28,10 +28,8 @@ COPY --from=gloursdocker/docker / /
 
 # CMD [ "uvicorn", "main:app", "--reload", "--workers", "1", "--host", "192.168.1.5", "--port", "8002" ]
 
-RUN sudo apt install tesseract-ocr-rus
+RUN sudo add-apt-repository ppa:alex-p/tesseract-ocr-devel\
+sudo apt install -y tesseract-ocr\
+sudo apt install tesseract-ocr-rus
 RUN uvicorn main:app --reload --workers 1 --host 192.168.1.5 --port 8002
 
-sudo apt update
-sudo apt install tesseract-ocr-rus
-cd API/app
-uvicorn main:app --reload --workers 1 --host 192.168.1.5 --port 8000
