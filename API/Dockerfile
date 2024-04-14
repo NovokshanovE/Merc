@@ -1,6 +1,6 @@
 # syntax = docker/dockerfile:1.4
 
-FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9-slim AS builder
+FROM tiangolo/uvicorn-gunicorn-fastapi:python3.11 AS builder
 
 WORKDIR /app
 
