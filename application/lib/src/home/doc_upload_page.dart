@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 // import 'dio';
 
 class MyAppState extends ChangeNotifier {
-  late Map req_body = {};
+  late Map req_body = {};//"page_number": 0, "doc_type": "None", "series_numbers": {"series":" ", "number":" "}};
   List<Map> history = [];
 
   void getNext(data) {
@@ -35,6 +35,18 @@ class MyAppState extends ChangeNotifier {
       case "drivers_back":
         req_body["doc_type"] = "Водительское удостоверение";
         req_body["page_number"] = 2;
+      default:
+        req_body["doc_type"] = "None";
+    }
+    if(req_body["series_numbers"] == null){
+      req_body["series_numbers"] = {};
+      req_body["series_numbers"]["series"] = "None";
+      req_body["series_numbers"]["number"] = "None";
+    }
+    if(req_body["series_numbers"] == null){
+      req_body["series_numbers"] = {};
+      req_body["series_numbers"]["series"] = "None";
+      req_body["series_numbers"]["number"] = "None";
     }
     print(req_body.toString());
     history.add(req_body);
@@ -169,7 +181,7 @@ class ViewDocInfo extends StatelessWidget {
             ),
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              "Информаия о документе",
+              "Информация о документе",
               style: TextStyle(fontSize: 20.0),
             ),
           ),
@@ -192,13 +204,13 @@ class ViewDocInfo extends StatelessWidget {
               TableRow(
                 children: [
                   BigCard(text: "Серия: "), //.["series"]),
-                  BigCard(text: data["series_numbers"]["series"]), //["number"]),
+                  BigCard(text: data["series_numbers"]["series"].toString()), //["number"]),
                 ],
               ),
               TableRow(
                 children: [
                   BigCard(text: "Номер: "), //.["series"]),
-                  BigCard(text: data["series_numbers"]["number"]), //["number"]),
+                  BigCard(text: data["series_numbers"]["number"].toString()), //["number"]),
                 ],
               ),
               TableRow(children: [
